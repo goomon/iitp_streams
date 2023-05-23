@@ -9,44 +9,35 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChestDevice extends Device {
-    private Value value;
-
-    @ToString
-    @Getter @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Value {
-        private List<Integer> resp;
-        private List<Integer> ecg;
-        private List<Integer> eda;
-        private List<Integer> emg;
-        private List<Integer> accX;
-        private List<Integer> accY;
-        private List<Integer> accZ;
-    }
+    private List<Integer> resp;
+    private List<Integer> ecg;
+    private List<Integer> eda;
+    private List<Integer> emg;
+    private List<Integer> accX;
+    private List<Integer> accY;
+    private List<Integer> accZ;
 
     public static ChestDevice combine(ChestDevice accumulator, ChestDevice data) {
-        Value value = data.getValue();
-        for (Integer record : value.getResp()) {
-            accumulator.getValue().getResp().add(record);
+        for (Integer record : data.getResp()) {
+            accumulator.getResp().add(record);
         }
-        for (Integer record : value.getEcg()) {
-            accumulator.getValue().getEcg().add(record);
+        for (Integer record : data.getEcg()) {
+            accumulator.getEcg().add(record);
         }
-        for (Integer record : value.getEda()) {
-            accumulator.getValue().getEda().add(record);
+        for (Integer record : data.getEda()) {
+            accumulator.getEda().add(record);
         }
-        for (Integer record : value.getEmg()) {
-            accumulator.getValue().getEmg().add(record);
+        for (Integer record : data.getEmg()) {
+            accumulator.getEmg().add(record);
         }
-        for (Integer record : value.getAccX()) {
-            accumulator.getValue().getAccX().add(record);
+        for (Integer record : data.getAccX()) {
+            accumulator.getAccX().add(record);
         }
-        for (Integer record : value.getAccY()) {
-            accumulator.getValue().getAccY().add(record);
+        for (Integer record : data.getAccY()) {
+            accumulator.getAccY().add(record);
         }
-        for (Integer record : value.getAccZ()) {
-            accumulator.getValue().getAccZ().add(record);
+        for (Integer record : data.getAccZ()) {
+            accumulator.getAccZ().add(record);
         }
         return accumulator;
     }
