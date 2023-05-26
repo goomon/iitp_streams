@@ -5,10 +5,7 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
-import org.example.model.ChestDevice;
-import org.example.model.ChestDeviceFeature;
-import org.example.model.WristDevice;
-import org.example.model.WristDeviceFeature;
+import org.example.model.*;
 import org.example.util.extractor.DeviceTimestampExtractor;
 import org.example.util.serialization.json.JsonSerdes;
 
@@ -28,9 +25,9 @@ public class DeviceProcessingTopology {
                         .withTimestampExtractor(new DeviceTimestampExtractor());
 
         // Window options.
-        TimeWindows chestWindow = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(10))
+        TimeWindows chestWindow = TimeWindows.ofSizeAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(5))
                 .advanceBy(Duration.ofSeconds(5));
-        TimeWindows wristWindow = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(10))
+        TimeWindows wristWindow = TimeWindows.ofSizeAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(5))
                 .advanceBy(Duration.ofSeconds(5));
 
         // Chest device stream.
@@ -59,11 +56,23 @@ public class DeviceProcessingTopology {
                         .toStream()
                         .map((key, value) -> KeyValue.pair(key.key(), new WristDeviceFeature(value)));
 
+        // Stream join.
+        StreamJoined<String, ChestDeviceFeature, WristDeviceFeature> joinParams =
+                StreamJoined.with(Serdes.String(), JsonSerdes.ChestDeviceFeature(), JsonSerdes.WristDeviceFeature());
+        JoinWindows joinWindows =
+                JoinWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(3), Duration.ofSeconds(3));
+        ValueJoiner<ChestDeviceFeature, WristDeviceFeature, CombinedDevice> valueJoiner = CombinedDevice::new;
+        KStream<String, CombinedDevice> deviceJoined =
+                chestDeviceFeatureKStream.join(wristDeviceFeatureKStream, valueJoiner, joinWindows, joinParams);
+
+
         // debug only.
         chestDeviceFeatureKStream
                 .print(Printed.<String, ChestDeviceFeature>toSysOut().withLabel("debug-chest"));
         wristDeviceFeatureKStream
                 .print(Printed.<String, WristDeviceFeature>toSysOut().withLabel("debug-wrist"));
+        deviceJoined
+                .print(Printed.<String, CombinedDevice>toSysOut().withLabel("debug-joined"));
         return builder.build();
     }
 }
