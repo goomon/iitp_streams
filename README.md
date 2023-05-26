@@ -16,3 +16,8 @@ Our KafkaStreams topology can be abstracted as follows:
 4. We will user the `suppress` operator to only emit the final computation of each sensor window. After emitting windowed chunk data, we will calculate feature data (mean, standard deviation, min, max).
 5. To apply ML model, we will perform a windowed join to combine the two sensor streams.
 6. Finally, we will expose the results of our aggregation data from multiple device streams. We will write the output of our joined stream to a topic called `feature`.
+
+# References
+
+* Seymour, Mitch. [**_Matering Kafka Streams and ksqlDB_**](https://assets.confluent.io/m/7997a914c1a19b5). Oreilly, 2023.
+* Bejeck Jr., William P. **_Kafka Streams in Action_**. Manning, 2019.
