@@ -65,6 +65,10 @@ public class DeviceProcessingTopology {
         KStream<String, CombinedDevice> deviceJoined =
                 chestDeviceFeatureKStream.join(wristDeviceFeatureKStream, valueJoiner, joinWindows, joinParams);
 
+        // Transmit to sink down stream.
+        Produced<String, CombinedDevice> producerOptions =
+                Produced.with(Serdes.String(), JsonSerdes.CombinedDevice());
+        deviceJoined.to("feature", producerOptions);
 
         // debug only.
         chestDeviceFeatureKStream
