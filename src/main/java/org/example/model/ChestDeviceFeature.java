@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ChestDeviceFeature {
     private String userId;
+    private long recordId;
     private long timestamp;
     private double respMean;
     private double respStd;
@@ -42,6 +43,7 @@ public class ChestDeviceFeature {
 
     public ChestDeviceFeature(ChestDevice chestDeviceWindowed) {
         this.userId = chestDeviceWindowed.getUserId();
+        this.recordId = chestDeviceWindowed.getRecordId();
         this.timestamp = chestDeviceWindowed.getTimestamp();
         this.respMean = calcMean(chestDeviceWindowed.getResp());
         this.respStd = calcStd(chestDeviceWindowed.getResp(), respMean);
@@ -96,6 +98,7 @@ public class ChestDeviceFeature {
     public String toString() {
         return "ChestDeviceFeature{" +
                 "userId='" + userId + '\'' +
+                ", recordId=" + recordId +
                 ", timestamp=" + timestamp +
                 '}';
     }

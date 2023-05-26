@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WristDeviceFeature {
     private String userId;
+    private long recordId;
     private long timestamp;
     private double bvpMean;
     private double bvpStd;
@@ -39,6 +40,7 @@ public class WristDeviceFeature {
 
     public WristDeviceFeature(WristDevice wristDeviceWindowed) {
         this.userId = wristDeviceWindowed.getUserId();
+        this.recordId = wristDeviceWindowed.getRecordId();
         this.timestamp = wristDeviceWindowed.getTimestamp();
         this.bvpMean = calcMean(wristDeviceWindowed.getBvp());
         this.bvpStd = calcStd(wristDeviceWindowed.getBvp(), bvpMean);
@@ -87,6 +89,7 @@ public class WristDeviceFeature {
     public String toString() {
         return "WristDeviceFeature{" +
                 "userId='" + userId + '\'' +
+                ", recordId=" + recordId +
                 ", timestamp=" + timestamp +
                 '}';
     }
